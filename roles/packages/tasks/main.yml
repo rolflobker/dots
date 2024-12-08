@@ -1,23 +1,30 @@
 - name: install packages
   ansible.builtin.dnf:
     name:
+      - alacritty
+      - cava
+      - chromium
+      - firefox
+      - git
       - htop
       - hyprland
       - kitty
-      - alacritty
-      - ncmpcpp
-      - mpv
+      - locate
+      - lsb_release
+      - mako
       - mpd
-      - zsh
+      - mpv
+      - ncdu
+      - ncmpcpp
+      - neovim
+      - newsboat
+      - nnn
       - pass
       - pass-otp
-      - git
-      - neovim
-      - chromium
-      - newsboat
+      - rofi-wayland
+      - stow
+      - tmux
       - unrar
-      - ncdu
       - xfce-polkit
-      - lsb_release
-      - locate
+      - zsh
     state: latest
