@@ -1,0 +1,74 @@
+- name: Test if fonts file exists
+  ansible.builtin.stat:
+    path: ./roles/fonts/files/fonts.tar.xz
+  register: fontsfile
+- name: "Create temp directory"
+  ansible.builtin.tempfile:
+    state: directory
+    suffix: fonts
+  register: font_temp
+  when: not fontsfile.stat.exists
+- name: Download fonts
+  ansible.builtin.get_url:
+    url: "{{ item }}"
+    dest: "{{ font_temp.path }}"
+  with_items:
+    - "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/CascadiaCode.tar.xz"
+    - "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/CascadiaMono.tar.xz"
+    - "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/DejaVuSansMono.tar.xz"
+    - "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/DroidSansMono.tar.xz"
+    - "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/FiraCode.tar.xz"
+    - "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/FiraMono.tar.xz"
+    - "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Inconsolata.tar.xz"
+    - "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.tar.xz"
+    - "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Meslo.tar.xz"
+    - "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Cousine.tar.xz"
+    # best compression is tar the files, then use xz -zke9 fonts.tar
+    # extreme level 9 is 31M versus 85M with xz defaults
+  when: not fontsfile.stat.exists
+- name: Extract all fonts
+  ansible.builtin.unarchive:
+    src: "{{ item }}"
+    dest: "{{ font_temp.path }}"
+  with_fileglob: "{{ font_temp.path }}/*.tar.xz"
+  when: not fontsfile.stat.exists
+- name: Delete extracted archives
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  with_fileglob: "{{ font_temp.path }}/*.tar.xz"
+  when: not fontsfile.stat.exists
+- name: Create tar file of fonts
+  ansible.builtin.shell:
+    cmd: "tar -cvf fonts.tar *"
+    chdir: "{{ font_temp.path }}"
+    creates: "{{ font_temp.path }}/fonts.tar"
+  when: not fontsfile.stat.exists
+- name: Compress using xz
+  # Using command because builtins do not have options we want
+  ansible.builtin.command:
+    cmd: xz --compress -9 --extreme {{ font_temp.path }}/fonts.tar
+    creates: "{{ font_temp.path }}/fonts.tar.xz"
+  when: not fontsfile.stat.exists
+- name: Move font archive to role files
+  ansible.builtin.copy:
+    src: "{{ font_temp.path }}/fonts.tar.xz"
+    dest: ./roles/fonts/files/fonts.tar.xz
+  when: not fontsfile.stat.exists
+- name: Remove temp folder
+  ansible.builtin.file:
+    path: "{{ font_temp.path }}"
+    state: absent
+  when: not fontsfile.stat.exists
+- name: Create local font folder
+  ansible.builtin.file:
+    path: ~/.local/share/fonts/
+    state: directory
+- name: Extract fonts to user folder
+  ansible.builtin.unarchive:
+    src: ./roles/fonts/files/fonts.tar.xz
+    dest: ~/.local/share/fonts/
+    keep_newer: true
+- name: Update font cache
+  ansible.builtin.shell:
+    cmd: "fc-cache --force"

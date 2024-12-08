@@ -1,0 +1,29 @@
+---
+- name: Setup a new laptop
+  hosts: laptop
+  vars:
+    home_dir: "{{ lookup('env', 'HOME') }}"
+    linux_user: "{{ lookup('env', 'USER') }}"
+  roles:
+    - { role: fonts, become: false, tags: ['fonts'] }
+    # - { role: api, become: true, tags: [ 'api', 'development' ] }
+    # - { role: browsers, become: true, tags: [ 'browser' ] }
+    # - { role: cloud, become: true, tags: [ 'cloud' ] }
+    # - { role: common, become: true, tags: [ 'common' ] }
+    # - { role: containers, become: true, tags: [ 'development', 'container' ] }
+    # - { role: databases, become: true, tags: [ 'development', 'database' ] }
+    # - { role: geerlingguy.docker, become: true, tags: [ 'development', 'container', 'docker' ] }
+    # - { role: git, become: true, tags: [ 'git' ] }
+    # - { role: go, become: true, tags: [ 'development', 'go', 'golang' ] }
+    # - { role: graphics, become: true, tags: [ 'graphics' ] }
+    # - { role: java, become: true, tags: [ 'development', 'java' ] }
+    # - { role: multimedia, become: true, tags: [ 'audio', 'multimedia', 'video' ] }
+    # - { role: networking, become: true, tags: [ 'network', 'vpn' ] }
+    # - { role: nodejs, become: true, tags: [ 'development', 'javascript', 'js', 'node', 'nodejs' ] }
+    # - { role: productivity, become: true, tags: [ 'productivity' ] }
+    # - { role: python, become: true, tags: [ 'development', 'python' ] }
+    # - { role: security, become: true, tags: [ 'security' ] }
+    # - { role: terminal, become: true, tags: [ 'terminal' ] }
+    # - { role: zig, become: true, tags: [ 'development', 'zig' ] }
+  tasks:
+    - debug: msg="You are the user {{ lookup('env','USER') }}"
