@@ -4,4 +4,4 @@ if ! command -v ansible &>/dev/null; then
 	sudo dnf install -y ansible
 fi
 
-ansible-playbook playbook.yaml --tags fonts
+ansible-playbook playbook.yaml -K --tags fonts,packages

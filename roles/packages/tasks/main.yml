@@ -1,0 +1,23 @@
+- name: install packages
+  ansible.builtin.dnf:
+    name:
+      - htop
+      - hyprland
+      - kitty
+      - alacritty
+      - ncmpcpp
+      - mpv
+      - mpd
+      - zsh
+      - pass
+      - pass-otp
+      - git
+      - neovim
+      - chromium
+      - newsboat
+      - unrar
+      - ncdu
+      - xfce-polkit
+      - lsb_release
+      - locate
+    state: latest

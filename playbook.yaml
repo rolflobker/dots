@@ -6,6 +6,7 @@
     linux_user: "{{ lookup('env', 'USER') }}"
   roles:
     - { role: fonts, become: false, tags: ['fonts'] }
+    - { role: packages, become: true, tags: ['packages'] }
     # - { role: api, become: true, tags: [ 'api', 'development' ] }
     # - { role: browsers, become: true, tags: [ 'browser' ] }
     # - { role: cloud, become: true, tags: [ 'cloud' ] }
