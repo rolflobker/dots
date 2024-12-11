@@ -5,6 +5,7 @@
       - cava
       - chromium
       - firefox
+      - flatpak
       - git
       - htop
       - hyprland
@@ -21,6 +22,8 @@
       - nnn
       - pass
       - pass-otp
+      - progress
+      - ranger
       - rofi-wayland
       - stow
       - tmux
